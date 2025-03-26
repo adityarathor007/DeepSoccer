@@ -10,3 +10,16 @@ Create data/test/ directory and in that directory run the following commands
 !gdown -O "121364_0.mp4" "https://drive.google.com/uc?id=1vVwjW1dE1drIdd4ZSILfbCGPD4weoNiu"
 ```
 
+
+## Directory Structure
+
+    .
+    ├── dataset
+    |   ├── roboflow        #for storing dataset used for fine tuning detection model for all 4 classes
+    |   ├── roboflow_ball   #for storing dataset used for fine tuning detection model for all 4 classes
+    |   ├── roboflow_pitch  #for storing dataset used for fine tuning pose detection yolo model              
+    |   └── tests           #for storing samples to be tested and results obtained
+    ├── runs                #to store fine tuned model
+    │   ├── detect                  
+    |   └── pose              
+    └── utils
