@@ -102,13 +102,15 @@ def draw_points_on_pitch(
     face_color: sv.Color = sv.Color.RED,
     edge_color: sv.Color = sv.Color.BLACK,
     radius: int = 10,
+    control_radius: int = 50,
     thickness: int = 2,
-    padding: int = 50,
+    padding: int = 100,
     scale: float = 0.1,
-    pitch: Optional[np.ndarray] = None
+    pitch: Optional[np.ndarray] = None,
+    show_area: bool = False
 ) -> np.ndarray:
     """
-    Draws points on a soccer pitch.
+    Draws points on a soccer pitch with an optional fading area.
 
     Args:
         config (SoccerPitchConfiguration): Configuration object containing the
@@ -121,6 +123,8 @@ def draw_points_on_pitch(
             Defaults to sv.Color.BLACK.
         radius (int, optional): Radius of the points in pixels.
             Defaults to 10.
+        control_radius (int, optional): Radius of the fading area around the points.
+            Defaults to 50.
         thickness (int, optional): Thickness of the point edges in pixels.
             Defaults to 2.
         padding (int, optional): Padding around the pitch in pixels.
@@ -129,6 +133,8 @@ def draw_points_on_pitch(
             Defaults to 0.1.
         pitch (Optional[np.ndarray], optional): Existing pitch image to draw points on.
             If None, a new pitch will be created. Defaults to None.
+        show_area (bool, optional): Whether to show a fading area around the points.
+            Defaults to False.
 
     Returns:
         np.ndarray: Image of the soccer pitch with points drawn on it.
@@ -145,6 +151,25 @@ def draw_points_on_pitch(
             int(point[0] * scale) + padding,
             int(point[1] * scale) + padding
         )
+        
+
+        if show_area:
+            step=5
+            alpha = 0.08
+            temp_pitch = pitch.copy()
+            for r in range (control_radius,step,(-1)*step):
+                overlay = temp_pitch.copy()
+                cv2.circle(
+                    img=overlay,
+                    center=scaled_point,
+                    radius=r,
+                    color=face_color.as_bgr(),
+                    thickness=-1
+                )
+                cv2.addWeighted(overlay, alpha, temp_pitch, 1 - alpha, 0, temp_pitch)
+            cv2.addWeighted(temp_pitch, 0.7, pitch, 0.3, 0, pitch)
+
+        # Draw main point
         cv2.circle(
             img=pitch,
             center=scaled_point,
@@ -159,17 +184,17 @@ def draw_points_on_pitch(
             color=edge_color.as_bgr(),
             thickness=thickness
         )
-
     return pitch
-
 
 def draw_paths_on_pitch(
     config: SoccerPitchConfiguration,
     paths: List[np.ndarray],
     color: sv.Color = sv.Color.WHITE,
-    thickness: int = 2,
+    thickness: int = 10,
     padding: int = 50,
     scale: float = 0.1,
+    maxlen: float = 200,
+    threshold_distance: int = 30,
     pitch: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """
@@ -200,27 +225,32 @@ def draw_paths_on_pitch(
             padding=padding,
             scale=scale
         )
-
-    for path in paths:
-        scaled_path = [
-            (
-                int(point[0] * scale) + padding,
-                int(point[1] * scale) + padding
-            )
-            for point in path if point.size > 0
-        ]
-
-        if len(scaled_path) < 2:
-            continue
-
-        for i in range(len(scaled_path) - 1):
-            cv2.line(
-                img=pitch,
-                pt1=scaled_path[i],
-                pt2=scaled_path[i + 1],
-                color=color.as_bgr(),
-                thickness=thickness
-            )
-
+    if len(paths) < 2:
         return pitch
 
+    scaled_path = [
+        (
+            int(point[0] * scale) + padding,
+            int(point[1] * scale) + padding
+        )
+        for point in paths
+    ]
+
+
+    for i in range(len(scaled_path) - 1):
+        pt1, pt2 = scaled_path[i], scaled_path[i + 1]
+        
+        # Compute Euclidean distance
+        distance = np.linalg.norm(np.array(pt1) - np.array(pt2))
+        # print(distance)
+        
+        if distance < threshold_distance:  # Only draw if distance is below threshold
+            cv2.line(
+                img=pitch,
+                pt1=pt1,
+                pt2=pt2,
+                color=color.as_bgr(),
+                thickness=max(1, int(thickness * i / len(scaled_path)))
+            )
+
+    return pitch
