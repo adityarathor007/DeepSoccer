@@ -1,14 +1,28 @@
-## To download the sample videos  from the [DFL - Bundesliga Data Shootout](https://www.kaggle.com/competitions/dfl-bundesliga-data-shootout) Kaggle competition using gdown.
+# ⚽ DeepSoccer: A Deep Learning Framework for Football Video Analysis
 
-Create data/test/ directory and in that directory run the following commands
+In this repo we designed a framework to analyze football videos using YOLO for real-time object detection and tracking. Beyond simple detection, it integrates 2D spatial projections, area matching, and advanced movement analysis to better understand player and ball dynamics.
+
+This approach enables more accurate scene interpretation and supports applications such as game analytics, performance insights, and tactical evaluation. Our experimental results show that DeepSoccer can effectively track multiple entities on the field and extract meaningful data from match footage.
+
+
+
+## Dataset Download
+
+training samples can be download from the following link along with chossing the yolov11:
+- For ball,players,gk,referree detection: https://universe.roboflow.com/roboflow-jvuqo/football-players-detection-3zvbc/dataset/14
+
+- For pitch keypoints detection https://universe.roboflow.com/roboflow-jvuqo/football-field-detection-f07vi
+
+for testing samples 
 
 ```bash
-!gdown -O "0bfacc_0.mp4" "https://drive.google.com/uc?id=12TqauVZ9tLAv8kWxTTBFWtgt2hNQ4_ZF"
-!gdown -O "2e57b9_0.mp4" "https://drive.google.com/uc?id=19PGw55V8aA6GZu5-Aac5_9mCy3fNxmEf"
-!gdown -O "08fd33_0.mp4" "https://drive.google.com/uc?id=1OG8K6wqUw9t7lp9ms1M48DxRhwTYciK-"
-!gdown -O "573e61_0.mp4" "https://drive.google.com/uc?id=1yYPKuXbHsCxqjA9G-S6aeR2Kcnos8RPU"
-!gdown -O "121364_0.mp4" "https://drive.google.com/uc?id=1vVwjW1dE1drIdd4ZSILfbCGPD4weoNiu"
+    cd data
+    gdown "https://drive.google.com/uc?id=1-CnEfapV2sjA8wM_gxTLMdHGwFuxEjbT"
+    unzip tests
+    
 ```
+
+you can also download samples from the Kaggle - [DFL - Bundesliga Data Shootout](https://www.kaggle.com/competitions/dfl-bundesliga-data-shootout) 
 
 
 ## Directory Structure
@@ -19,7 +33,29 @@ Create data/test/ directory and in that directory run the following commands
     |   ├── roboflow_ball   #for storing dataset used for fine tuning detection model for all 4 classes
     |   ├── roboflow_pitch  #for storing dataset used for fine tuning pose detection yolo model              
     |   └── tests           #for storing samples to be tested and results obtained
-    ├── runs                #to store fine tuned model
-    │   ├── detect                  
-    |   └── pose              
-    └── utils
+    ├── runs                #to store fine-tuned model 
+    │   ├── train          
+    |   └── train_ball              
+    ├── utils
+    |    ├── field_config.py
+    |    ├── field_annotator.py
+    |    └── team.py
+    ├── 2D_Projections.ipynb
+    ├── README.md
+    ├── analyze.ipynb
+    ├── demo.mp4
+    ├── img_detections.ipynb
+    ├── pitch_keypoint_detection.ipynb
+    ├── team_clustering.ipynb
+    ├── train.ipynb
+    └── visualize.ipynb
+
+
+    
+## Results
+
+Some of the results can be downloaded from this link
+``` bash 
+gdown "https://drive.google.com/uc?id=16xDEt4gAMq9o_xEd9iTbrfHbE2pHGE_k"
+
+``` 
