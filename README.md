@@ -8,7 +8,7 @@ This approach enables more accurate scene interpretation and supports applicatio
 
 ## Dataset Download
 
-training samples can be download from the following link along with chossing the yolov11:
+training samples can be downloaded from the following link along with choosing the yolov11:
 - For ball,players,gk,referree detection: https://universe.roboflow.com/roboflow-jvuqo/football-players-detection-3zvbc/dataset/14
 
 - For pitch keypoints detection https://universe.roboflow.com/roboflow-jvuqo/football-field-detection-f07vi
